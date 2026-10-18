@@ -1,0 +1,86 @@
+CP-500 M80 - Emulador para MS-DOS                            versao 1.0
+=====================================================================
+
+Emula o CP-500 M80 da Prologica (TRS-80 Model III nacional com modo de
+80 colunas): Z80 a 2 MHz, video 64x16 (BASIC e DOS500) e 80x24 no CP/M
+(SO-08), 64K de RAM, controladora de disco WD1793 com 4 drives.
+Roda o BASIC da ROM, o DOS500 e o SO-08 (CP/M de 80 colunas).
+
+REQUISITOS
+  MS-DOS puro (ou FreeDOS), processador 486/Pentium ou compativel
+  (SiS550, Vortex86...), VGA, 4 MB de RAM ou mais.
+  Nada mais: o CWSDPMI ja esta embutido no CP5M80.EXE.
+
+ARQUIVOS
+  CP5M80.EXE       o emulador
+  CWSDPMI.DOC      licenca do CWSDPMI (embutido no EXE)
+  (as ROMs ja estao embutidas; se CP500M80_27128.bin e CP500M80_2732.bin
+   estiverem na pasta, elas sao usadas no lugar)
+  CP5M80.CFG       configuracao (criado automaticamente)
+  CP5M80.KEY       teclado personalizado (F5 > Editar teclado personalizado)
+  codigo-fonte: https://github.com/lgpf/CP500M80
+
+USO
+  CP5M80                         sem disco: logotipo e "BASIC (S ou N)"
+                                 S = BASIC residente, N = monitor da ROM
+  CP5M80 JOGOS01.DSK             DOS500
+  CP5M80 SO08UTL1.dsk            CP/M (SO-08) em 80 colunas
+  CP5M80 A.DSK B.DMK C.HFE D.IMD ate 4 discos
+
+TECLAS
+  F1  ajuda (com navegacao)       F5  configuracao
+  F9  discos                      F10 reset      Shift+F10 sair
+  Esc = BREAK (ESC no CP/M)       PgUp/PgDn = CLEAR
+  Ctrl+letra = caractere de controle no CP/M
+  F5 > Setas no CP/M: Originais (padrao) ou WordStar (^E ^X ^S ^D,
+  PgUp/PgDn = ^R ^C) - no prompt do CP/M o ^C reinicia o sistema
+  CapsLock = SHIFT + 0 do CP-500 (alterna maiusculas/minusculas)
+  Memoria fixa: 48K no BASIC/DOS500, 64K no CP/M (como no CP-500 M80)
+  (todos os detalhes estao no F1)
+
+FORMATOS DE DISCO
+  DMK (discos do SO-08), DSK (JV1/JV3 - discos do DOS500; DMK com
+  extensao .DSK tambem e reconhecido), HFE, IMD, JV1, JV3, IMG.
+  Todos lidos e gravados. As alteracoes vao para o arquivo ao ejetar,
+  trocar de disco ou sair. No F9, a tecla E cria um disco vazio (.DMK)
+  para formatar (FORM500 no CP/M ou FORMAT no DOS500) e a tecla X
+  exporta o disco para outro formato.
+
+DRIVES
+  DOS500: drives 0 a 3.  CP/M (SO-08): A:, B: e C: (a BIOS do SO-08 nao
+  tem o D: - "Erro de NSOB em D: Selecao").
+
+LEDS DOS DRIVES (F5 > LEDs dos drives: Ligados/Desligados)
+  Imitam a luz de acesso do drive. Dois LEDs: o primeiro e dos drives
+  0 e 2, o segundo dos drives 1 e 3. Acendem a cada acesso ao drive
+  (so se houver disco montado) e apagam 0,5 s depois do ultimo.
+  - DOS: dois quadradinhos vermelhos no canto direito da tela (em cima
+    no modo de 64 colunas; embaixo na tela de 80 colunas do CP/M).
+  Desligado no F5, nenhum deles acende.
+
+NOTAS TECNICAS (o que foi descoberto na ROM e na BIOS do SO-08)
+  - Base TRS-80 Model III: portas E0 (mascara/estado das interrupcoes,
+    relogio de 30 Hz; escrever em E0 reconhece o relogio), E4 (NMI da
+    controladora), EC, F0-F3 (WD1793), F4 (drive, face, densidade),
+    FF (cassete e som).
+  - A leitura/gravacao de setor usa wait states: o fim do setor chega
+    como NMI depois de um INI/OUTI a mais.
+  - Partida: o primeiro IN (F4) da ROM (3494h) troca 3000-37FF pela
+    parte alta da 27128: um programa que se copia para 4300h, limpa a
+    tela e da boot pelo disco ou mostra o logotipo e "BASIC (S ou N)".
+  - Mapa de memoria do M80: IN (F4) com o mapa no registrador A
+    (A8-A15). Bit 5 = ROM e mapa do Model III; bits 3-4 = so RAM (64K
+    para o CP/M); sem eles, teclado em 3800 e video em 3C00; bits 6-7 =
+    pagina de 1K do video de 80 colunas que aparece em 3C00.
+  - Video de 80 colunas: 3 paginas de 1K, 8 linhas de 128 bytes por
+    pagina (80 usados) = 80x24.
+  - Gerador de caracteres 2732: dois jogos de 256 caracteres 8x8. O
+    primeiro e o do modo de 64 colunas; o segundo (com semigraficos 2x2
+    e video inverso) e o das 80 colunas.
+  - Teclado no CP/M: a BIOS le a matriz na interrupcao e traduz por uma
+    tabela em RAM (normal, SHIFT, minusculas). O emulador entrega os
+    caracteres do PC por uma tecla virtual que usa essa tabela.
+
+NAO EMULADO: cassete, impressora, serial.
+
+RetroLabs - JL Martins e Luiz Pacheco - 2026

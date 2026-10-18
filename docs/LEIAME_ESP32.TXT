@@ -1,0 +1,38 @@
+CP-500 M80 para TTGO VGA32 v1.4 (ESP32 + PSRAM)  -  versao 1.0
+RetroLabs - JL Martins e Luiz Pacheco - 2026
+Codigo-fonte: https://github.com/lgpf/CP500M80
+
+GRAVACAO (ESP32 DOWNLOAD TOOL V3.6.5, chip ESP32)
+  bootloader.bin   @ 0x1000
+  partitions.bin   @ 0x8000
+  boot_app0.bin    @ 0xE000
+  CP5M80.bin       @ 0x10000
+  SPI SPEED 40MHz   SPI MODE DIO   FLASH SIZE 32Mbit
+  Se a placa ja estava com o DGT-100 desta mesma serie, basta gravar
+  o CP5M80.bin @ 0x10000 (bootloader e particoes sao os mesmos).
+
+CARTAO SD (FAT32)
+  Copie os discos (DMK, DSK, HFE, IMD...). Pode usar pastas.
+  CP5M80.CFG / CP5M80.KEY ficam na raiz do cartao.
+  Sem cartao/disco: logotipo e "BASIC (S ou N)" (S = BASIC, N = monitor).
+
+USO
+  Teclado PS/2 no conector KEYBOARD. Monitor VGA (640x480).
+  F1 ajuda, F5 configuracao, F9 discos, F10 reset,
+  Shift+F10 reinicia a placa (grava discos e configuracao).
+  BASIC e DOS500 em 64x16; CP/M (SO-08) em 80x24.
+
+LEDS DOS DRIVES (F5 > LEDs dos drives: Ligados/Desligados)
+  Imitam a luz de acesso do drive. Dois LEDs: o primeiro e dos drives
+  0 e 2, o segundo dos drives 1 e 3. Acendem a cada acesso ao drive
+  (so se houver disco montado) e apagam 0,5 s depois do ultimo.
+  Sao LEDs de verdade na porta PS/2 do MOUSE, que o emulador nao usa.
+  Cada LED com um resistor de 330 ohms em serie e o catodo no GND
+  (pino 3 do mini-DIN):
+    pino 1 (dados, IO27) = drives 0 e 2
+    pino 5 (clock, IO26) = drives 1 e 3
+  Se ficarem fracos, use 150 ohms (a placa tem resistores na porta).
+  Desligado no F5, os pinos ficam em 0.
+
+DIAGNOSTICO
+  Monitor serial 115200 (PuTTY ou Monitor Serial do Arduino).

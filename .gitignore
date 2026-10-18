@@ -1,0 +1,9 @@
+*.o
+*.exe
+*.EXE
+cp5lnx
+cp5dos
+build/
+*.CFG
+*.KEY
+*.bak
